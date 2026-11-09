@@ -1,0 +1,11 @@
+uint8 OK=0
+uint8 WARN=1
+uint8 ERROR=2
+uint8 STALE=3
+string asset_id
+string subsystem
+uint8 status
+float32 score
+string summary
+builtin_interfaces/Time last_update
+string[] fault_ids

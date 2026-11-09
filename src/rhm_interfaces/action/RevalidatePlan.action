@@ -1,0 +1,13 @@
+string recommendation_id
+string asset_id
+string planner_id
+geometry_msgs/PoseStamped candidate_pose
+bool dry_run
+---
+bool passed
+string reason
+float32 planning_time_seconds
+nav_msgs/Path path
+---
+float32 progress
+string stage

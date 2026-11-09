@@ -1,0 +1,11 @@
+std_msgs/Header header
+string recommendation_id
+string fault_event_id
+string asset_id
+string strategy
+string reason
+float32 confidence
+uint32 rank
+geometry_msgs/PoseStamped target_pose
+bool requires_operator_approval
+string validation_status

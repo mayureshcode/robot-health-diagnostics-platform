@@ -1,0 +1,7 @@
+string asset_id
+bool include_inactive_faults
+---
+bool success
+string message
+HealthStatus health
+FaultEvent[] faults

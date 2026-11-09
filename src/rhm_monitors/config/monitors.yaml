@@ -1,0 +1,5 @@
+rhm_sensor_monitor:
+  ros__parameters:
+    use_sim_time: true
+    warn_age: 0.5
+    error_age: 2.0

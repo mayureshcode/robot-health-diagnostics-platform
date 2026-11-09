@@ -1,0 +1,2 @@
+<?xml version="1.0"?>
+<package format="3"><name>rhm_aggregator</name><version>0.1.0</version><description>Lifecycle C++ health aggregator</description><maintainer email="maintainer@example.invalid">RHM contributors</maintainer><license>MIT</license><buildtool_depend>ament_cmake</buildtool_depend><depend>rclcpp</depend><depend>rclcpp_lifecycle</depend><depend>diagnostic_msgs</depend><depend>rhm_interfaces</depend><test_depend>ament_cmake_gtest</test_depend><export><build_type>ament_cmake</build_type></export></package>

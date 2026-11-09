@@ -1,0 +1,7 @@
+string asset_id
+string[] fault_event_ids
+bool clear_all
+---
+bool success
+string message
+uint32 cleared_count

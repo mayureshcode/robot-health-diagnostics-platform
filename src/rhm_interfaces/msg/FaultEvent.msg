@@ -1,0 +1,14 @@
+std_msgs/Header header
+uint8 INFO=0
+uint8 WARN=1
+uint8 ERROR=2
+uint8 CRITICAL=3
+string event_id
+string asset_id
+string subsystem
+string category
+uint8 severity
+string code
+string description
+bool active
+builtin_interfaces/Time detected_at

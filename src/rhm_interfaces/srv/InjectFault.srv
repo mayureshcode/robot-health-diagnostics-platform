@@ -1,0 +1,9 @@
+string asset_id
+string fault_type
+float32 magnitude
+float32 duration_seconds
+uint32 seed
+---
+bool accepted
+string injection_id
+string message
