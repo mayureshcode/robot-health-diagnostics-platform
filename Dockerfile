@@ -4,6 +4,7 @@ FROM ${ROS_BASE_IMAGE}
 ENV DEBIAN_FRONTEND=noninteractive ROS_DISTRO=jazzy
 RUN apt-get update && apt-get install -y --no-install-recommends \
  python3-rosdep python3-colcon-common-extensions python3-pytest python3-pytest-cov \
+ python3-hypothesis \
  python3-flake8 python3-pip python3-venv python3-mypy python3-yaml \
  cppcheck clang-tidy shellcheck git curl jq ca-certificates \
  ros-jazzy-ros-gz ros-jazzy-navigation2 ros-jazzy-nav2-bringup \

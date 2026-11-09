@@ -1,6 +1,7 @@
 """ROS-independent health logic; all timestamps are caller-supplied ROS time."""
 from dataclasses import dataclass
 from enum import IntEnum
+from math import isfinite
 
 
 class Status(IntEnum):
@@ -20,15 +21,14 @@ class Thresholds:
     error_age: float = 2.0
 
     def __post_init__(self) -> None:
-        if not 0 <= self.warn_age < self.error_age:
-            raise ValueError('require 0 <= warn_age < error_age')
+        if (not isfinite(self.warn_age) or not isfinite(self.error_age)
+                or not 0 <= self.warn_age < self.error_age):
+            raise ValueError('require finite 0 <= warn_age < error_age')
 
 
 def sensor_status(now: float, last_seen: float | None, limits: Thresholds) -> Status:
     """Classify staleness; absent, future and non-finite timestamps fail safe."""
-    import math
-
-    if last_seen is None or not math.isfinite(now) or not math.isfinite(last_seen):
+    if last_seen is None or not isfinite(now) or not isfinite(last_seen):
         return Status.STALE
     age = now - last_seen
     if age < 0:
@@ -42,9 +42,7 @@ def sensor_status(now: float, last_seen: float | None, limits: Thresholds) -> St
 
 def battery_status(percent: float) -> Status:
     """Evaluate battery percentage with invalid measurements failing safe."""
-    import math
-
-    if not math.isfinite(percent) or percent < 0 or percent > 100:
+    if not isfinite(percent) or percent < 0 or percent > 100:
         return Status.STALE
     if percent < 10:
         return Status.ERROR

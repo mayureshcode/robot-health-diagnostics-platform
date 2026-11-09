@@ -1,0 +1,5 @@
+# Only development tools. ROS runtime packages are managed by apt/rosdep.
+ruff==0.8.6
+mypy==1.14.1
+pytest-cov==6.0.0
+hypothesis==6.122.3

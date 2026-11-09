@@ -21,7 +21,8 @@ class Aggregator final : public rclcpp_lifecycle::LifecycleNode {
  public:
   Aggregator() : LifecycleNode("rhm_aggregator") {
     rcl_interfaces::msg::ParameterDescriptor descriptor;
-    descriptor.description = "Consecutive diagnostic samples required to change status";
+    descriptor.description = "Consecutive diagnostic samples required to change status (startup only)";
+    descriptor.read_only = true;
     rcl_interfaces::msg::IntegerRange range;
     range.from_value = 1;
     range.to_value = 100;
@@ -29,7 +30,8 @@ class Aggregator final : public rclcpp_lifecycle::LifecycleNode {
     descriptor.integer_range.push_back(range);
     declare_parameter<int>("debounce_samples", 3, descriptor);
     rcl_interfaces::msg::ParameterDescriptor timeout_descriptor;
-    timeout_descriptor.description = "Time in seconds until a missing diagnostic is stale";
+    timeout_descriptor.description = "Time in seconds until a missing diagnostic is stale (startup only)";
+    timeout_descriptor.read_only = true;
     declare_parameter<double>("stale_timeout", 2.0, timeout_descriptor);
     parameter_callback_ = add_on_set_parameters_callback(
       [this](const std::vector<rclcpp::Parameter> &params) {
@@ -72,7 +74,10 @@ class Aggregator final : public rclcpp_lifecycle::LifecycleNode {
     try {
       debounce_samples_ = get_parameter("debounce_samples").as_int();
       stale_timeout_ = get_parameter("stale_timeout").as_double();
-      if (debounce_samples_ < 1 || stale_timeout_ <= 0.0) return CallbackReturn::FAILURE;
+      if (debounce_samples_ < 1 || !std::isfinite(stale_timeout_) || stale_timeout_ <= 0.0) {
+        RCLCPP_ERROR(get_logger(), "invalid aggregator startup parameters");
+        return CallbackReturn::FAILURE;
+      }
       auto qos = rclcpp::QoS(rclcpp::KeepLast(10)).reliable().durability_volatile();
       publisher_ = create_publisher<rhm_interfaces::msg::HealthStatus>("/robot_health", qos);
       faults_publisher_ = create_publisher<rhm_interfaces::msg::FaultEvent>("/fault_events", qos);
