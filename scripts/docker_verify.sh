@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC1091
 set -Eeuo pipefail
 cd "$(dirname "$0")/.."
 mkdir -p artifacts

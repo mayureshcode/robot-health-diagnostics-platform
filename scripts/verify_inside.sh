@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC1091
 set -Eeuo pipefail
 source /opt/ros/jazzy/setup.bash
 mkdir -p artifacts
