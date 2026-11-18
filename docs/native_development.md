@@ -38,33 +38,43 @@ RHM_SKIP_SMOKE=1 bash scripts/native_verify.sh
 This is not a complete runtime gate and must not be reported as one.
 `RHM_SKIP_ROSDEP=1` skips dependency installation, not dependency validation.
 
-## Manual native launch (no Gazebo yet)
+## One-command native launch (monitor-only or Gazebo mobile)
 
-Terminal 1:
-
-```bash
-source /opt/ros/jazzy/setup.bash
-source install/setup.bash
-ros2 launch rhm_bringup native_health.launch.py
-```
-
-Terminal 2:
+From the repository root, launch the **currently implemented** components:
 
 ```bash
-source /opt/ros/jazzy/setup.bash
-source install/setup.bash
-bash scripts/activate_native.sh
-ros2 topic echo /robot_health --once
-ros2 topic echo /diagnostics --once
+bash scripts/run_native.sh
 ```
 
-The monitor initially reports **STALE**, because **no sensor producers are
-started**. This is expected fail-safe behavior; it is not evidence of
-real or simulated sensors or Nav2 readiness.
+The launcher incrementally builds the workspace, sources both setup files
+(safely around Bash `nounset`), launches `rhm_sensor_monitor` and
+`rhm_aggregator`, waits for both lifecycle services, activates the nodes, and
+prints the first `/robot_health` message. `Ctrl+C` stops the launch process.
+See `artifacts/run_native_build.log` and `artifacts/run_native_launch.log`.
 
-The `native_smoke.sh` script automates this check, isolates its ROS domain
-(`RHM_SMOKE_DOMAIN_ID`, default 201), cleans up its processes, and fails if
-health output is absent or is not stale.
+Optional usage:
+
+```bash
+bash scripts/run_native.sh --no-build    # skip the incremental build
+bash scripts/run_native.sh --verify      # run native build/test/lint/smoke instead
+RHM_DOMAIN_ID=203 bash scripts/run_native.sh  # override default isolated domain 202
+```
+
+No sensor producers are started, so the report should show **STALE**.
+This indicates fail-safe behavior, not that a real or simulated robot is
+publishing data. **ABB IRB120, Nav2, MoveIt and dashboard are not implemented**. A new
+Gazebo mobile launch exists but is **unverified until `--verify-sim` passes**.
+
+## Mobile Gazebo simulation (new source)
+
+```bash
+bash scripts/run_native.sh --sim
+RHM_SIM_GUI=1 bash scripts/run_native.sh --sim
+bash scripts/run_native.sh --verify-sim
+```
+
+Read [Phase 2A simulation guide](phase2_mobile_sim.md) for topics, TF,
+GPU headless troubleshooting, and what is actually tested.
 
 ## Switching to Gazebo later
 
@@ -75,8 +85,7 @@ Gazebo is publishing `/clock`**. Native smoke and non-Gazebo diagnostics use
 
 ## Known limitations
 
-- Source for the dual-asset Gazebo worlds and IRB120 controller integration
-  is not implemented in this baseline.
+- The new mobile Gazebo source is unverified; the ABB arm cell is absent.
 - The existing C++ aggregator currently summarizes only the `mobile` asset.
 - Fault events, fault reset, scenario regression, and predictive modules remain
   incomplete.

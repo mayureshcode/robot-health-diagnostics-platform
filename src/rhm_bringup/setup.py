@@ -14,6 +14,8 @@ setup(
         ("share/rhm_bringup/launch", glob("launch/*.launch.py")),
     ],
     install_requires=["setuptools"],
+    # colcon uses this metadata to select pytest rather than setup.py unittest.
+    extras_require={"test": ["pytest"]},
     zip_safe=True,
     maintainer="RHM contributors",
     maintainer_email="maintainer@example.invalid",

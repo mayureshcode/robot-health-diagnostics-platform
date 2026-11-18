@@ -1,0 +1,26 @@
+# Example mapping, NOT a confirmed snapshot of the surveillance robot's live topics.
+# Inspect: ros2 topic list -t; ros2 topic info -v <topic>
+# Adjust topics/types below to match your current simulation. Never fabricate telemetry.
+asset_id: mobile
+sensors:
+  - name: lidar
+    topic: /niihan/legacy/lidar/points
+    message_type: PointCloud2
+    warn_age: 0.8
+    stale_age: 3.0
+  - name: imu
+    topic: /imu
+    message_type: Imu
+    warn_age: 0.5
+    stale_age: 2.0
+  - name: odom
+    topic: /odom
+    message_type: Odometry
+    warn_age: 0.5
+    stale_age: 2.0
+# ROS graph presence only; these are NOT lifecycle/functional health checks.
+# Remove or update names if your Nav2 nodes use namespaces.
+watch_nodes:
+  - /planner_server
+  - /controller_server
+  - /bt_navigator

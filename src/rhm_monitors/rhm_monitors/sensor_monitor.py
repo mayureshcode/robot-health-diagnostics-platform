@@ -13,7 +13,12 @@ from rclpy.parameter import Parameter
 from rclpy.qos import QoSProfile, ReliabilityPolicy, qos_profile_sensor_data
 from sensor_msgs.msg import Imu, LaserScan
 
-from rhm_monitors.logic.health import Thresholds, sensor_status
+from rhm_monitors.logic.health import Status, Thresholds, sensor_status
+
+
+def diagnostic_level_byte(status: Status) -> bytes:
+    """Encode Jazzy DiagnosticStatus.level (IDL byte), not Python int."""
+    return bytes((int(status),))
 
 
 class SensorMonitor(LifecycleNode):
@@ -27,7 +32,7 @@ class SensorMonitor(LifecycleNode):
         super().__init__('rhm_sensor_monitor')
         self._lock = RLock()
         self._last: dict[str, float | None] = {'scan': None, 'imu': None, 'odom': None}
-        self._subscriptions: list[Any] = []
+        self._sensor_subscriptions: list[Any] = []
         self._timer: Any = None
         self._publisher: Any = None
         self.declare_parameter(
@@ -77,7 +82,7 @@ class SensorMonitor(LifecycleNode):
                 ('imu', Imu, '/imu'),
                 ('odom', Odometry, '/odom'),
             ):
-                self._subscriptions.append(self.create_subscription(
+                self._sensor_subscriptions.append(self.create_subscription(
                     message_type, topic,
                     lambda msg, name=key: self._record(name),
                     qos_profile_sensor_data,
@@ -126,7 +131,7 @@ class SensorMonitor(LifecycleNode):
                 entry = DiagnosticStatus()
                 entry.name = f'mobile/sensor/{key}'
                 entry.hardware_id = 'mobile'
-                entry.level = int(status)
+                entry.level = diagnostic_level_byte(status)
                 entry.message = status.name
                 entry.values = [KeyValue(
                     key='age_seconds',
@@ -150,9 +155,9 @@ class SensorMonitor(LifecycleNode):
         if self._timer is not None:
             self.destroy_timer(self._timer)
             self._timer = None
-        for subscription in self._subscriptions:
+        for subscription in self._sensor_subscriptions:
             self.destroy_subscription(subscription)
-        self._subscriptions.clear()
+        self._sensor_subscriptions.clear()
         if self._publisher is not None:
             self.destroy_lifecycle_publisher(self._publisher)
             self._publisher = None

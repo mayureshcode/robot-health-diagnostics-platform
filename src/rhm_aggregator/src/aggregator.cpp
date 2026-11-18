@@ -115,6 +115,7 @@ class Aggregator final : public rclcpp_lifecycle::LifecycleNode {
           res->message = "Reset unsupported until fault latching is implemented";
           res->cleared_count = 0;
         });
+      RCLCPP_INFO(get_logger(), "RHM aggregator configured; monitoring /diagnostics");
       return CallbackReturn::SUCCESS;
     } catch (const std::exception &e) {
       RCLCPP_ERROR(get_logger(), "configure failed: %s", e.what());
@@ -125,6 +126,7 @@ class Aggregator final : public rclcpp_lifecycle::LifecycleNode {
     publisher_->on_activate();
     faults_publisher_->on_activate();
     timer_ = create_wall_timer(std::chrono::milliseconds(200), [this]() { publish_snapshot(); });
+    RCLCPP_INFO(get_logger(), "RHM aggregator activation callback completed");
     return CallbackReturn::SUCCESS;
   }
   void publish_snapshot() {
@@ -161,6 +163,7 @@ class Aggregator final : public rclcpp_lifecycle::LifecycleNode {
     timer_.reset();
     publisher_->on_deactivate();
     faults_publisher_->on_deactivate();
+    RCLCPP_WARN(get_logger(), "RHM aggregator lifecycle deactivated");
     return CallbackReturn::SUCCESS;
   }
   CallbackReturn on_cleanup(const rclcpp_lifecycle::State &) override {

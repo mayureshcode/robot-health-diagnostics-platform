@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080e19">
+  <meta name="description" content="Live, read-only ROS 2 health observability for mobile robots and manipulators">
+  <title>RHM — Robot Health Console</title>
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-icon">✳</span><div><strong>RHM<span class="brand-dot">.</span></strong><small>ROBOT HEALTH SYSTEM</small></div></div>
+      <div class="nav-caption">WORKSPACE</div>
+      <nav aria-label="Dashboard navigation">
+        <a class="nav-item current" href="#overview" aria-current="page"><span class="nav-icon">▦</span> Overview <span class="nav-active-dot"></span></a>
+        <a class="nav-item" href="#sensors"><span class="nav-icon">◈</span> Subsystems</a>
+        <a class="nav-item" href="#timeline"><span class="nav-icon">≋</span> Event timeline</a>
+        <a class="nav-item" href="#architecture"><span class="nav-icon">⌁</span> Integration</a>
+      </nav>
+      <div class="side-bottom">
+        <div class="platform-signal"><span class="pulsing-dot" id="nav-signal"></span><div><strong id="nav-connection">Connecting</strong><span>ROS 2 / LIVE TELEMETRY</span></div></div>
+        <div class="sidebar-note">READ-ONLY OBSERVABILITY<br><span>v0.1 · NATIVE UBUNTU</span></div>
+      </div>
+    </aside>
+    <main id="overview">
+      <header class="topbar"><div class="breadcrumb">Workspace <span>/</span> Monitoring <span>/</span> <strong>Overview</strong></div><div class="top-right"><span id="clock-utc">—</span><span class="vertical-sep"></span><span class="session-chip"><span class="pulsing-dot" id="top-signal"></span><span id="connection-state">CONNECTING</span></span></div></header>
+      <div class="content">
+        <div class="page-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span>MISSION CONTROL / SYSTEM OBSERVABILITY</div><h1>Robot health <span>overview<span class="accent-period">.</span></span></h1><p>Live diagnostics and subsystem observability across your robot fleet.</p></div><div class="top-actions"><span class="source-indicator" id="data-source">DATA: NOT CONNECTED</span><button id="refresh" class="icon-btn" title="Refresh snapshot" aria-label="Refresh snapshot">↻</button></div></div>
+        <section class="fleet-heading"><span class="section-label">YOUR ASSETS</span><span class="section-count">02 ASSETS REGISTERED · 01 INTEGRATION TARGET</span></section>
+        <section class="asset-grid" aria-label="Robot assets">
+          <article class="asset-card featured"><div class="asset-top"><div class="asset-identity"><span class="asset-glyph">⬡</span><div><span class="micro">ASSET 01 / MOBILE PLATFORM</span><h2>Surveillance Rover</h2><span class="asset-subtitle">ROS 2 Jazzy · Niihan Integration</span></div></div><span class="state-pill unknown" id="mobile-status">UNKNOWN</span></div><div class="asset-body"><div class="gauge-wrap"><div class="gauge" id="health-gauge"><div class="gauge-inner"><strong id="score">—</strong><span>/ 100</span></div></div><div class="gauge-caption">OVERALL HEALTH SCORE</div></div><div class="metrics"><div class="metric-row"><span>Subsystems observed</span><strong id="sensor-count">—</strong></div><div class="metric-row"><span>Healthy</span><strong id="healthy-count">—</strong></div><div class="metric-row"><span>Warnings / Errors</span><strong id="warning-count">—</strong></div><div class="metric-row"><span>Last ROS timestamp</span><strong id="last-observed">—</strong></div></div></div><div class="asset-footer"><span><span class="small-led" id="mobile-led"></span> <span id="mobile-description">Awaiting health stream</span></span><span class="font-mono">ROS DOMAIN · <span id="domain-label">—</span></span></div></article>
+          <article class="asset-card waiting"><div class="asset-top"><div class="asset-identity"><span class="asset-glyph arm">⌘</span><div><span class="micro">ASSET 02 / MANIPULATOR</span><h2>ABB IRB120</h2><span class="asset-subtitle">MoveIt 2 · Industrial Arm Cell</span></div></div><span class="state-pill inactive">NOT CONNECTED</span></div><div class="arm-visual"><svg width="200" height="130" viewBox="0 0 200 130" fill="none" role="img" aria-label="Stylized robot arm outline"><path d="M34 108H166" stroke="#35465e" stroke-width="2"/><path d="M72 108H127V99H72V108Z" stroke="#25364b" stroke-width="2"/><path d="M83 99L86 74L109 61L121 39L147 25" stroke="#455b73" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/><path d="M83 99L86 74L109 61L121 39L147 25" stroke="#7c91a9" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="86" cy="74" r="8" fill="#152336" stroke="#6c8098" stroke-width="3"/><circle cx="121" cy="39" r="8" fill="#152336" stroke="#6c8098" stroke-width="3"/><path d="M147 25L163 17M147 25L162 34" stroke="#6c8098" stroke-width="5" stroke-linecap="round"/></svg><div class="no-connection">No arm telemetry connected</div><span>This asset is planned for a future integration.</span></div><div class="asset-footer"><span><span class="small-led gray"></span> No simulated or hardware data</span><span class="font-mono">STATUS · OFFLINE</span></div></article>
+        </section>
+        <div class="analytics-grid"><section class="panel chart-panel"><div class="panel-heading"><div><span class="section-label">LIVE METRICS</span><h3>Health score history</h3></div><span class="panel-tag">CURRENT SESSION</span></div><div class="chart-caption"><span>Observed samples only · No simulated dashboard values</span><span id="sample-total">0 SAMPLES</span></div><div class="chart-wrap"><canvas id="health-chart" aria-label="Observed health score history chart" role="img"></canvas><div id="chart-empty" class="empty-chart">Waiting for real ROS health samples to plot…</div></div><div class="chart-legend"><span><i class="legend-dot"></i> Overall health score</span><span>0–100</span></div></section>
+        <section class="panel insights-panel"><div class="panel-heading"><div><span class="section-label">SYSTEM SUMMARY</span><h3>Operational insights</h3></div><span class="info-chip">LIVE</span></div><div class="insights"><div class="insight-item"><span class="insight-icon blue">⌁</span><div><label>Telemetry connectivity</label><strong id="insight-connection">Waiting for ROS bridge</strong></div></div><div class="insight-item"><span class="insight-icon orange">!</span><div><label>Subsystems needing attention</label><strong id="insight-issues">—</strong></div></div><div class="insight-item"><span class="insight-icon purple">◇</span><div><label>Failure-aware recommendations</label><strong>Not implemented in this batch</strong></div></div></div><div class="insight-note">⦿ &nbsp; This console is read-only. No navigation or hardware commands can be issued here.</div></section></div>
+        <div class="bottom-grid"><section class="panel sensors-panel" id="sensors"><div class="panel-heading"><div><span class="section-label">SYSTEM HEALTH</span><h3>Subsystem diagnostics</h3></div><span id="sensor-summary" class="panel-tag">NO OBSERVATIONS</span></div><div class="table-scroller"><table aria-label="Subsystem diagnostic status"><thead><tr><th>SUBSYSTEM</th><th>STATUS</th><th>FREQUENCY</th><th>FRESHNESS</th><th>TOPIC / SOURCE</th></tr></thead><tbody id="sensor-rows"><tr><td colspan="5" class="empty-row">Waiting for /robot_health…</td></tr></tbody></table></div></section>
+          <section class="panel timeline-panel" id="timeline"><div class="panel-heading"><div><span class="section-label">DIAGNOSTICS</span><h3>Event timeline</h3></div><span id="event-count" class="panel-tag">0 EVENTS</span></div><div id="event-list" class="event-list"><div class="no-events"><span>◌</span><p>No observed status changes or fault events yet.</p></div></div><div class="timeline-footer">Status transitions are observations, not necessarily confirmed faults.</div></section></div>
+        <footer id="architecture"><div><strong>RHM / ROBOT HEALTH MONITORING</strong><span>Observer-only integration · ROS 2 Jazzy · Ubuntu 24.04</span></div><span>INSPECT · DETECT · UNDERSTAND</span></footer>
+      </div>
+    </main>
+  </div>
+  <div class="token-modal hidden" id="token-modal"><div class="token-card"><div class="eyebrow">SECURE DASHBOARD ACCESS</div><h2>Authentication required</h2><p>Enter the dashboard token configured via <code>RHM_DASHBOARD_TOKEN</code>. It stays in this browser tab only.</p><form id="token-form"><input type="password" id="token-input" autocomplete="off" placeholder="Dashboard access token" required><button type="submit">Connect securely →</button></form><small id="token-error"></small></div></div>
+  <script src="/app.js" defer></script>
+</body>
+</html>

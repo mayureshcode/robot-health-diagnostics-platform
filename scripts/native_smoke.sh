@@ -6,14 +6,18 @@ cd "$ROOT"
 mkdir -p artifacts
 # Keep the smoke graph isolated from other local ROS projects.
 export ROS_DOMAIN_ID="${RHM_SMOKE_DOMAIN_ID:-201}"
+set +u  # ROS environment hooks may reference unset optional variables.
 # shellcheck source=/dev/null
 source /opt/ros/jazzy/setup.bash
+set -u
 if [[ ! -f install/setup.bash ]]; then
   echo 'ERROR: build and source workspace before the smoke test.' >&2
   exit 2
 fi
+set +u  # ROS environment hooks may reference unset optional variables.
 # shellcheck source=/dev/null
 source install/setup.bash
+set -u
 pids=()
 cleanup() {
   local pid

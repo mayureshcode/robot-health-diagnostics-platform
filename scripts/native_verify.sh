@@ -20,14 +20,18 @@ run_step() {
     return "$rc"
   fi
 }
-if [[ "$(. /etc/os-release; echo "$ID:$VERSION_ID")" != ubuntu:24.04 ]]; then
+# shellcheck source=/dev/null
+. /etc/os-release
+if [[ "${ID:-}:${VERSION_ID:-}" != ubuntu:24.04 ]]; then
   record 'FAIL environment | not Ubuntu 24.04'; exit 2
 fi
 if [[ ! -f /opt/ros/jazzy/setup.bash ]]; then
   record 'FAIL environment | missing /opt/ros/jazzy/setup.bash'; exit 2
 fi
+set +u  # ROS environment hooks may reference unset optional variables.
 # shellcheck source=/dev/null
 source /opt/ros/jazzy/setup.bash
+set -u
 if [[ "${ROS_DISTRO:-}" != jazzy ]]; then
   record "FAIL environment | expected ROS_DISTRO=jazzy, got ${ROS_DISTRO:-unset}"; exit 2
 fi
@@ -42,11 +46,15 @@ fi
 if [[ "${RHM_SKIP_ROSDEP:-0}" != 1 ]]; then
   run_step rosdep rosdep install --from-paths src --ignore-src --rosdistro jazzy -y
 fi
-run_step bash_syntax bash -n scripts/doctor.sh scripts/setup_native.sh scripts/native_verify.sh scripts/native_smoke.sh scripts/activate_native.sh scripts/docker_verify.sh
-run_step shellcheck shellcheck -s bash scripts/doctor.sh scripts/setup_native.sh scripts/native_verify.sh scripts/native_smoke.sh scripts/activate_native.sh
+run_step bash_syntax bash -n scripts/doctor.sh scripts/setup_native.sh scripts/native_verify.sh scripts/native_smoke.sh scripts/activate_native.sh scripts/run_native.sh scripts/docker_verify.sh
+run_step shellcheck shellcheck -s bash scripts/doctor.sh scripts/setup_native.sh scripts/native_verify.sh scripts/native_smoke.sh scripts/activate_native.sh scripts/run_native.sh
+run_step phase2_python_syntax python3 -m py_compile scripts/check_mobile_sim.py src/rhm_bringup/launch/mobile_sim.launch.py
+run_step xacro_validate xacro src/rhm_description/urdf/rhm_mobile.urdf.xacro
 run_step colcon_build colcon build --symlink-install --event-handlers console_direct+ --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+set +u  # ROS environment hooks may reference unset optional variables.
 # shellcheck source=/dev/null
 source install/setup.bash
+set -u
 run_step colcon_test colcon test --event-handlers console_direct+
 run_step test_results colcon test-result --verbose
 run_step coverage .venv/bin/python -m pytest -q src/rhm_monitors/test/test_health.py \

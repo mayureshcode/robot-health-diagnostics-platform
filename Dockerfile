@@ -7,16 +7,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
  python3-hypothesis \
  python3-flake8 python3-pip python3-venv python3-mypy python3-yaml \
  cppcheck clang-tidy shellcheck git curl jq ca-certificates \
- ros-jazzy-ros-gz ros-jazzy-navigation2 ros-jazzy-nav2-bringup \
+ ros-jazzy-ros-gz ros-jazzy-robot-state-publisher ros-jazzy-navigation2 ros-jazzy-nav2-bringup \
  ros-jazzy-moveit ros-jazzy-robot-localization ros-jazzy-xacro \
  ros-jazzy-ros2-control ros-jazzy-ros2-controllers \
  ros-jazzy-diagnostic-updater ros-jazzy-lifecycle-msgs \
  ros-jazzy-ament-lint-auto ros-jazzy-ament-lint-common && \
  rm -rf /var/lib/apt/lists/*
+COPY tools/dashboard-requirements.txt /tmp/rhm-dashboard-requirements.txt
 RUN python3 -m venv --system-site-packages /opt/rhm-venv && \
  /opt/rhm-venv/bin/pip install --no-cache-dir \
  ruff==0.8.6 hypothesis==6.122.3 coverage==7.6.10 mypy==1.14.1 \
- yamllint==1.35.1
+ yamllint==1.35.1 && \
+ /opt/rhm-venv/bin/pip install --no-cache-dir -r /tmp/rhm-dashboard-requirements.txt
 ENV PATH=/opt/rhm-venv/bin:$PATH
 WORKDIR /workspace
 COPY . /workspace

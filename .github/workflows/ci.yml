@@ -33,8 +33,12 @@ jobs:
       - name: Headless simulation gate
         run: |
           bash scripts/docker_verify.sh
-          echo 'No Gazebo integration launch test implemented: failing closed.'
-          exit 1
+          docker run --rm --network host --ipc host --shm-size=1g \
+            -e RHM_DOMAIN_ID=232 \
+            -e QT_QPA_PLATFORM=offscreen -e LIBGL_ALWAYS_SOFTWARE=1 \
+            -v "$PWD/artifacts:/workspace/artifacts" \
+            "${RHM_IMAGE:-rhm-jazzy-batch-a}" \
+            'bash scripts/run_native.sh --verify-sim'
       - uses: actions/upload-artifact@v4
         if: always()
         with:

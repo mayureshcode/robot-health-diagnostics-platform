@@ -2,6 +2,7 @@
 # Read-only diagnostics for native Ubuntu development environment.
 set -Eeuo pipefail
 printf '\n=== Native RHM host doctor ===\n'
+# shellcheck source=/dev/null
 . /etc/os-release
 printf 'OS: %s %s\n' "$ID" "$VERSION_ID"
 if [[ "$ID:$VERSION_ID" != 'ubuntu:24.04' ]]; then

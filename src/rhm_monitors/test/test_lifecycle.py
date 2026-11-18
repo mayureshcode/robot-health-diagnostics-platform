@@ -14,12 +14,15 @@ def test_configure_activate_deactivate_cleanup() -> None:
     try:
         node = SensorMonitor()
         assert node.trigger_configure() == TransitionCallbackReturn.SUCCESS
+        assert len(node._sensor_subscriptions) == 3
+        # rclpy maintains this separate internal list; never override it.
         assert len(node._subscriptions) == 3
         assert node.trigger_activate() == TransitionCallbackReturn.SUCCESS
         assert node._timer is not None
         assert node.trigger_deactivate() == TransitionCallbackReturn.SUCCESS
         assert node._timer is None
         assert node.trigger_cleanup() == TransitionCallbackReturn.SUCCESS
+        assert len(node._sensor_subscriptions) == 0
         assert len(node._subscriptions) == 0
         assert node._publisher is None
         assert node.trigger_configure() == TransitionCallbackReturn.SUCCESS
