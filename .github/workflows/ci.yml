@@ -19,7 +19,7 @@ jobs:
           restore-keys: buildx-${{ runner.os }}-
       - name: Verify inside ROS container
         run: bash scripts/docker_verify.sh
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: verification-logs
@@ -39,7 +39,7 @@ jobs:
             -v "$PWD/artifacts:/workspace/artifacts" \
             "${RHM_IMAGE:-rhm-jazzy-batch-a}" \
             'bash scripts/run_native.sh --verify-sim'
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: nightly-logs
